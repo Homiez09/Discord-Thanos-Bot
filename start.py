@@ -1,3 +1,6 @@
+# Made by Phumrapee Soenvanichakul (jannnn1235)
+# Github: https://github.com/Jannnn1235/NENEbot
+
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -17,7 +20,16 @@ async def on_ready():
 async def on_message(message):  
     await bot.process_commands(message) 
 
-@bot.command()
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("**Invalid command.**")
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('**Please pass in all requirements.**')
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("**You don't have permission**")
+
+@bot.command(aliases=['getout', 'fuck', 'ดีด'])
 @commands.has_guild_permissions(administrator=True)
 async def snap(ctx):
     try:
@@ -26,10 +38,10 @@ async def snap(ctx):
         await ctx.channel.send(file = file)
         for members in ctx.author.voice.channel.members:    
             await members.move_to(None)
-            embed = discord.Embed(description=f'@{members} was slain by Thanos, for the good of the Universe.')
-            await ctx.send(embed=embed)
+            #embed = discord.Embed(description=f'{members.mention} was slain by Thanos, for the good of the Universe.')
+            await ctx.send(f'{members.mention} was slain by Thanos, for the good of the Universe.')
     except:
-        embed = discord.Embed(description="Something Error.")
+        embed = discord.Embed(description="No one in voice channel.")
         await ctx.send(embed=embed)
 
 bot.run(os.getenv("TOKEN"))
