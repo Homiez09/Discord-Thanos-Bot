@@ -33,15 +33,15 @@ async def on_command_error(ctx, error):
 @commands.has_guild_permissions(administrator=True)
 async def snap(ctx):
     try:
-        print('Working...')
-        file = discord.File("image/Thanos.gif")
-        await ctx.channel.send(file = file)
-        for members in ctx.author.voice.channel.members:    
-            await members.move_to(None)
-            #embed = discord.Embed(description=f'{members.mention} was slain by Thanos, for the good of the Universe.')
-            await ctx.send(f'{members.mention} was slain by Thanos, for the good of the Universe.')
+        if ctx.author.voice.channel.members != "":
+            print('Working...')
+            file = discord.File("image/Thanos.gif")
+            await ctx.channel.send(file = file)
+            for members in ctx.author.voice.channel.members:    
+                await members.move_to(None)
+                #embed = discord.Embed(description=f'{members.mention} was slain by Thanos, for the good of the Universe.')
+                await ctx.send(f'{members.mention} was slain by Thanos, for the good of the Universe.')
     except:
-        embed = discord.Embed(description="No one in voice channel.")
-        await ctx.send(embed=embed)
+        await ctx.send('No one in voice channel.')
 
 bot.run(os.getenv("TOKEN"))
