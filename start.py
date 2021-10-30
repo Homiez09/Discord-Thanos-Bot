@@ -52,7 +52,7 @@ async def snap(ctx):
     except:
         await ctx.send('No one in voice channel.')
 
-@bot.command(aliasese=['stat', 'kill', 'st'])
+@bot.command(aliases=['stat', 'kill', 'st'])
 async def stats(ctx):
     try:
         result = firebase.get(os.getenv("DB"), '')
