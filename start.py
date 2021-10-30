@@ -1,14 +1,19 @@
 # Made by Phumrapee Soenvanichakul (jannnn1235)
 # Github: https://github.com/Jannnn1235/NENEbot
-
-import discord
-from discord.ext import commands
-from dotenv import load_dotenv
 import os
+import discord
+
+from discord.ext import commands
+from firebase import firebase
+from dotenv import load_dotenv
 
 load_dotenv('.env')
 #bot = commands.Bot(command_prefix=config.PREFIX["command"], intents=discord.Intents().all())
 bot = commands.Bot(command_prefix=os.getenv("PREFIX"), intents = discord.Intents().all())
+
+firebase = firebase.FirebaseApplication(
+    os.getenv("URLDB")
+)
 
 @bot.event
 async def on_ready():
@@ -37,11 +42,22 @@ async def snap(ctx):
             print('Working...')
             file = discord.File("image/Thanos.gif")
             await ctx.channel.send(file = file)
+            kill = 0
             for members in ctx.author.voice.channel.members:    
+                kill += 1
                 await members.move_to(None)
-                #embed = discord.Embed(description=f'{members.mention} was slain by Thanos, for the good of the Universe.')
                 await ctx.send(f'{members.mention} was slain by Thanos, for the good of the Universe.')
+            result = firebase.get(os.getenv("DB"), '')
+            result = firebase.put('/Stats', "kill", int(result["kill"]) + kill)
     except:
         await ctx.send('No one in voice channel.')
+
+@bot.command(aliasese=['stat', 'kill', 'st'])
+async def stats(ctx):
+    try:
+        result = firebase.get(os.getenv("DB"), '')
+        await ctx.send(f'I have slain {result["kill"]} members')
+    except:
+        await ctx.send('Try to check google firebase maybe something is wrong.')
 
 bot.run(os.getenv("TOKEN"))
